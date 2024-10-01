@@ -21,9 +21,9 @@ def get_all_orders():
             """
         SELECT
             id,
-            metal_Id,
-            size_Id,
-            style_Id
+            metal_id,
+            size_id,
+            style_id
         FROM Orders
         """
         )
@@ -52,11 +52,27 @@ def get_all_orders():
 
 
 def get_single_order(id):
-    selected_order = None
-    for order in ORDERS:
-        if order["id"] == id:
-            selected_order = order
-    return selected_order
+    with sqlite3.connect("./kneeldiamonds.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute(
+            """
+        SELECT
+            id,
+            metal_id,
+            size_id,
+            style_id
+        FROM Orders
+        WHERE id = ?
+        """,
+            (id,),
+        )
+
+        data = db_cursor.fetchone()
+        order = Order(data["id"], data["metal_Id"], data["size_Id"], data["style_Id"])
+        return order.__dict__
 
 
 def create_order(order):
