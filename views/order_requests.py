@@ -109,4 +109,4 @@ def update_order(id, new_order):
     for index, order in enumerate(ORDERS):
         if order["id"] == id:
             ORDERS[index] = new_order
-            break
+            return new_order
