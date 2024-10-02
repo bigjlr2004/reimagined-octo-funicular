@@ -63,3 +63,20 @@ INSERT INTO `Orders`VALUES (null, 5, 3, 5);
             size_Id,
             style_Id
         FROM Orders
+
+
+SELECT
+    o.size_id,
+    o.style_id,
+    o.metal_id,
+    m.metal,
+    m.price,
+    sizes.carets,
+    sizes.price,
+    styles.style,
+    styles.price
+
+FROM `Orders` o
+JOIN Metals m ON m.id = o.metal_id
+JOIN Styles  ON styles.id = o.style_id
+JOIN Sizes  ON sizes.id = o.size_id

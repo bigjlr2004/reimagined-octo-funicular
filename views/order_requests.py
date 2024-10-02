@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Order
+from models import Order, Size, Style, Metal
 
 ORDERS = [
     {"metalId": 4, "sizeId": 4, "styleId": 2, "id": 1},
@@ -20,12 +20,23 @@ def get_all_orders():
         db_cursor.execute(
             """
         SELECT
-            id,
-            metal_id,
-            size_id,
-            style_id
-        FROM Orders
-        """
+                o.size_id,
+                o.style_id,
+                o.metal_id,
+                m.id,
+                m.metal,
+                m.price,
+                sizes.id,
+                sizes.carets,
+                sizes.price size_price,
+                styles.id,
+                styles.style,
+                styles.price style_price
+
+            FROM `Orders` o
+            JOIN Metals m ON m.id = o.metal_id
+            JOIN Styles  ON styles.id = o.style_id
+            JOIN Sizes  ON sizes.id = o.size_id """
         )
 
         # Initialize an empty list to hold all animal representations
@@ -43,6 +54,14 @@ def get_all_orders():
                 row["size_id"],
                 row["style_id"],
             )
+
+            metal = Metal(row["id"], row["metal"], row["price"])
+            size = Size(row["id"], row["carets"], row["size_price"])
+            style = Style(row["id"], row["style"], row["style_price"])
+
+            order.metal = metal.__dict__
+            order.size = size.__dict__
+            order.style = style.__dict__
 
             orders.append(
                 order.__dict__
